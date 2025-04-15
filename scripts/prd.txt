@@ -1,0 +1,110 @@
+<context>
+# Overview  
+PetFood is a web application that helps pet owners make informed decisions about their dog's nutrition. The app allows users to enter information about their dogs (breed, age, gender, weight, activity level, health conditions, etc.) and provides personalized food recommendations based on these characteristics.
+
+# Core Features  
+1. Dog Profile Creation
+   - What it does: Allows users to create profiles for their dogs with detailed information
+   - Why it's important: Personalized recommendations require detailed information about the dog
+   - How it works: Form-based data collection with validation
+
+2. Food Recommendation Engine
+   - What it does: Analyzes dog profile information to recommend appropriate food
+   - Why it's important: Helps pet owners make informed decisions about nutrition
+   - How it works: Rule-based algorithm that matches dog characteristics to food requirements
+
+3. Food Database
+   - What it does: Stores information about different dog food options
+   - Why it's important: Provides the foundation for recommendation logic
+   - How it works: Structured database with nutritional information and suitability factors
+
+4. User Dashboard
+   - What it does: Displays saved dog profiles and recommendations
+   - Why it's important: Allows users to track and update information
+   - How it works: User-friendly interface with profile management options
+
+# User Experience  
+- User personas: Dog owners of all experience levels, from first-time owners to experienced breeders
+- Key user flows: Profile creation, receiving recommendations, reviewing saved recommendations
+- UI/UX considerations: Mobile-friendly, intuitive design, educational components about dog nutrition
+</context>
+<PRD>
+# Technical Architecture  
+- System components:
+  - Frontend: Next.js with React and TypeScript for type safety and server-side rendering
+  - State management: React Context API for global state
+  - Styling: Tailwind CSS for responsive design
+  - Form handling: React Hook Form for validation
+  - Backend: Next.js API routes for any server-side functionality
+  - Database: Initially local storage, with room to add server-side persistence later
+
+- Data models:
+  - Dog Profile: breed, age, gender, weight, activity level, health conditions
+  - Food Database: brand, product line, suitable ages, suitable breeds, ingredients, nutritional value
+
+- APIs and integrations:
+  - Initially self-contained application with no external APIs
+  - Future potential for integration with pet food databases or e-commerce sites
+
+- Infrastructure requirements:
+  - Deployment to Vercel for seamless Next.js hosting
+  - Utilization of Vercel's edge functions and CDN for optimal performance
+
+# Development Roadmap  
+- MVP requirements:
+  1. Basic user interface with responsive design using Next.js pages
+  2. Dog profile creation form with essential fields
+  3. Simple rule-based recommendation engine
+  4. Local storage for saving dog profiles
+  5. Basic food database with common options
+  6. Recommendation display with explanations
+
+- Future enhancements:
+  1. User accounts and authentication
+  2. Expanded food database
+  3. Advanced recommendation algorithms
+  4. Integration with online retailers for purchasing
+  5. Nutritional information visualization
+  6. Community features (reviews, discussions)
+
+# Logical Dependency Chain
+1. Set up Next.js project with TypeScript and Tailwind CSS
+2. Create UI components and layouts using React
+3. Implement dog profile data model and form
+4. Build food database structure
+5. Develop recommendation algorithm
+6. Connect components with local storage persistence
+7. Deploy MVP to Vercel
+8. Collect feedback and plan enhancements
+
+# Risks and Mitigations  
+- Technical challenges:
+  - Creating an effective recommendation algorithm without expert knowledge
+    - Mitigation: Research dog nutrition guidelines, start with simple rules, allow for refinement
+  - Managing data organization without a backend initially
+    - Mitigation: Careful state management and storage structure design
+
+- MVP considerations:
+  - Balancing simplicity with valuable functionality
+    - Mitigation: Focus on core user journey with minimal but complete feature set
+  - Optimizing Next.js pages for performance
+    - Mitigation: Utilize proper data fetching methods and static generation where possible
+
+- Resource constraints:
+  - Limited food database information
+    - Mitigation: Start with major brands and common foods, design for extensibility
+
+# Appendix  
+- Research findings:
+  - Different dog breeds have different nutritional needs
+  - Age is a critical factor in dog nutrition (puppy, adult, senior stages)
+  - Health conditions like allergies, obesity, or joint issues require special dietary considerations
+  - Activity level affects caloric needs and macronutrient balance
+
+- Technical specifications:
+  - Mobile-first responsive design
+  - Accessibility compliance (WCAG guidelines)
+  - Progressive enhancement for broad browser support
+  - Next.js-specific optimizations including Image component and API routes
+  - Vercel deployment pipeline with preview environments
+</PRD> 

@@ -1,0 +1,11 @@
+# Task ID: 5
+# Title: Develop recommendation algorithm
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Create the algorithm that matches dog profiles to appropriate food recommendations.
+# Details:
+Implement a rule-based recommendation algorithm that considers the dog's breed, age, weight, activity level, and health conditions. Create scoring functions for each food based on the dog's characteristics. Develop rules for special cases (puppies, seniors, specific health conditions). Implement sorting and ranking of food options. Create explanations for why each food is recommended. Optimize the algorithm for performance.
+
+# Test Strategy:
+Test the algorithm with various dog profiles to ensure appropriate recommendations. Verify that the algorithm correctly prioritizes foods based on the dog's needs. Check that explanation generation works correctly. Test edge cases such as very young or old dogs, or dogs with multiple health conditions.

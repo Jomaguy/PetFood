@@ -1,0 +1,11 @@
+# Task ID: 3
+# Title: Implement dog profile data model and form
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Create the data model for dog profiles and implement the form for users to input dog information.
+# Details:
+Design the dog profile data model with properties for breed, age, gender, weight, activity level, and health conditions. Implement a multi-step form for collecting dog profile information. Add form validation using React Hook Form. Include dropdown options for breeds and predefined options for activity levels. Implement client-side validation for all form fields. Create a preview step before submission.
+
+# Test Strategy:
+Test form submission with various valid and invalid inputs. Verify that validation works correctly for all fields. Test the multi-step navigation. Ensure the form data is properly structured according to the data model.

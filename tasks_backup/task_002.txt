@@ -1,0 +1,11 @@
+# Task ID: 2
+# Title: Create core UI components and layouts
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Develop reusable UI components and page layouts that will be used throughout the application.
+# Details:
+Create the following UI components: Header, Footer, Navigation, Layout wrapper, Card component for displaying dog profiles, Form components for inputs, Button components with different styles, Modal component for displaying detailed information. Implement responsive layouts for different screen sizes. Ensure all components are type-safe with proper TypeScript interfaces. Use Tailwind CSS for styling with a consistent design system.
+
+# Test Strategy:
+Manually test each component in different screen sizes. Ensure components render correctly and are responsive. Verify that TypeScript types are being enforced correctly. Check for accessibility compliance.
