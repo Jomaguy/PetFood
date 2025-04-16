@@ -1,0 +1,136 @@
+# PetFood App Styling Guidelines
+
+## Color Scheme
+
+The app uses a nature-inspired color scheme with light brown and dark green as primary colors:
+
+- **Primary Colors:**
+  - Light Brown (`#A67C52`, `#C4A484`, `#8B5A2B`)
+  - Dark Green (`#2E5E4E`, `#4A7862`, `#1A3C32`)
+
+### Usage Guidelines
+
+1. **Always import colors from the theme:**
+```typescript
+import { theme } from '@/styles';
+
+// ✅ DO:
+const StyledComponent = styled.div`
+  background-color: ${theme.colors.primaryBrown};
+  color: ${theme.colors.primaryGreen};
+`;
+
+// ❌ DON'T:
+const WrongComponent = styled.div`
+  background-color: #A67C52; // Don't use hard-coded colors
+  color: green; // Don't use generic color names
+`;
+```
+
+2. **Component Theming:**
+- Use primary green for main CTAs and interactive elements
+- Use light brown for secondary actions and accents
+- Use neutral colors for text and backgrounds
+
+3. **Accessibility:**
+- Ensure sufficient contrast between text and background colors
+- Use semantic colors for status indicators (success, warning, error)
+- Test color combinations with color blindness simulators
+
+4. **Dark Mode Considerations:**
+- Define dark mode variants in the theme
+- Use CSS variables for dynamic theming
+- Test color combinations in both light and dark modes
+
+## Typography
+
+Use the Nunito font family for consistent branding:
+
+```typescript
+// ✅ DO:
+const Title = styled.h1`
+  font-family: ${theme.fonts.heading};
+`;
+
+// ❌ DON'T:
+const WrongTitle = styled.h1`
+  font-family: Arial; // Don't use direct font declarations
+`;
+```
+
+## Spacing and Layout
+
+Use theme spacing values for consistency:
+
+```typescript
+// ✅ DO:
+const Container = styled.div`
+  padding: ${theme.space.md};
+  margin-bottom: ${theme.space.lg};
+`;
+
+// ❌ DON'T:
+const WrongContainer = styled.div`
+  padding: 16px; // Don't use hard-coded values
+  margin-bottom: 24px;
+`;
+```
+
+## Component-Specific Styling
+
+Use predefined component themes:
+
+```typescript
+// ✅ DO:
+const Button = styled.button`
+  background-color: ${theme.components.button.primary.bg};
+  color: ${theme.components.button.primary.color};
+`;
+
+// ❌ DON'T:
+const WrongButton = styled.button`
+  background-color: green; // Don't use direct color values
+  color: white;
+`;
+```
+
+## Responsive Design
+
+Use theme breakpoints for consistent responsive behavior:
+
+```typescript
+// ✅ DO:
+const ResponsiveComponent = styled.div`
+  @media (min-width: ${theme.breakpoints.sm}) {
+    // styles
+  }
+`;
+
+// ❌ DON'T:
+const WrongResponsiveComponent = styled.div`
+  @media (min-width: 768px) { // Don't use hard-coded breakpoints
+    // styles
+  }
+`;
+```
+
+## Best Practices
+
+1. Always use theme values for:
+   - Colors
+   - Typography
+   - Spacing
+   - Borders
+   - Shadows
+   - Component-specific styles
+
+2. Maintain consistency by:
+   - Using styled-components with theme props
+   - Following the component theme structure
+   - Using semantic color names
+   - Testing for accessibility
+
+3. Document style decisions in:
+   - Component comments
+   - Storybook stories
+   - Design system documentation 

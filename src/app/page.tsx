@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ContextDebugger } from '@/components/ui/ContextDebugger';
 
 export default function Home() {
   return (
@@ -20,10 +21,10 @@ export default function Home() {
           
           <div className="text-center">
             <Link 
-              href="/quiz" 
-              className="btn-primary inline-block"
+              href="/create-profile" 
+              className="btn-primary inline-block px-8 py-3 rounded-lg bg-primary hover:bg-primaryGreenDark text-white font-medium transition-colors"
             >
-              Start Now
+              Create Dog Profile
             </Link>
           </div>
         </div>
@@ -44,6 +45,9 @@ export default function Home() {
             <p>Easy-to-follow recommendations in minutes</p>
           </div>
         </div>
+        
+        {/* Context Debugger - REMOVE IN PRODUCTION */}
+        <ContextDebugger />
       </div>
     </main>
   );

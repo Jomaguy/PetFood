@@ -1,0 +1,1352 @@
+{
+  "brands": [
+    {
+      "id": "b1",
+      "name": "Premium Paws",
+      "description": "High-quality pet nutrition since 1990",
+      "website": "https://premiumpaws.example.com",
+      "foundedYear": 1990,
+      "headquarters": "Portland, OR"
+    },
+    {
+      "id": "b2",
+      "name": "Nature's Best",
+      "description": "All-natural, organic ingredients for your pet",
+      "website": "https://naturesbest.example.com",
+      "foundedYear": 2005,
+      "headquarters": "Boulder, CO"
+    },
+    {
+      "id": "b3",
+      "name": "Canine Science",
+      "description": "Scientifically formulated nutrition for optimal health",
+      "website": "https://caninescience.example.com",
+      "foundedYear": 1982,
+      "headquarters": "Boston, MA"
+    },
+    {
+      "id": "b4",
+      "name": "Wilderness Pack",
+      "description": "Grain-free, ancestral diets inspired by nature",
+      "website": "https://wildernesspack.example.com",
+      "foundedYear": 2010,
+      "headquarters": "Seattle, WA"
+    },
+    {
+      "id": "b5",
+      "name": "Vet's Choice",
+      "description": "Veterinarian-developed formulas for specific health needs",
+      "website": "https://vetschoice.example.com",
+      "foundedYear": 1995,
+      "headquarters": "Raleigh, NC"
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "name": "Adult Chicken & Rice Formula",
+      "brandId": "b1",
+      "productLine": "Classic Nutrition",
+      "type": "dry",
+      "priceRange": {
+        "min": 45.99,
+        "max": 89.99,
+        "currency": "USD"
+      },
+      "description": "Complete and balanced nutrition for adult dogs",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Chicken Meal",
+          "description": "Concentrated protein source",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Oatmeal",
+          "description": "Whole grain oats",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Barley",
+          "description": "Whole grain barley",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 364,
+        "protein": 26,
+        "fat": 16,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 44,
+        "omega3": 0.5,
+        "omega6": 2.5,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 150
+        },
+        "minerals": {
+          "Calcium": 1.2,
+          "Phosphorus": 0.9,
+          "Iron": 180
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Joint Health Support", "Immune System Support"],
+      "imageUrl": "https://example.com/images/adult-chicken-rice.jpg",
+      "packageSizes": ["5lb", "15lb", "30lb"]
+    },
+    {
+      "id": "p2",
+      "name": "Puppy Growth Formula",
+      "brandId": "b1",
+      "productLine": "Life Stage Nutrition",
+      "type": "dry",
+      "priceRange": {
+        "min": 49.99,
+        "max": 94.99,
+        "currency": "USD"
+      },
+      "description": "Nutrient-rich formula for growing puppies",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Chicken Meal",
+          "description": "Concentrated protein source",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Fish Oil",
+          "description": "Source of DHA for brain development",
+          "potentialAllergen": false,
+          "source": "animal"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 380,
+        "protein": 30,
+        "fat": 20,
+        "fiber": 3.5,
+        "moisture": 10,
+        "carbohydrates": 36.5,
+        "omega3": 1.0,
+        "omega6": 3.0,
+        "vitamins": {
+          "Vitamin A": 17000,
+          "Vitamin D": 1200,
+          "Vitamin E": 175
+        },
+        "minerals": {
+          "Calcium": 1.4,
+          "Phosphorus": 1.1,
+          "Iron": 190
+        }
+      },
+      "suitableAges": ["puppy"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Brain Development", "Bone Health"],
+      "imageUrl": "https://example.com/images/puppy-growth.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p3",
+      "name": "Senior Vitality Blend",
+      "brandId": "b1",
+      "productLine": "Life Stage Nutrition",
+      "type": "dry",
+      "priceRange": {
+        "min": 47.99,
+        "max": 92.99,
+        "currency": "USD"
+      },
+      "description": "Balanced nutrition to support aging dogs",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Glucosamine",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        },
+        {
+          "name": "Chondroitin",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 330,
+        "protein": 24,
+        "fat": 12,
+        "fiber": 5,
+        "moisture": 10,
+        "carbohydrates": 49,
+        "omega3": 0.8,
+        "omega6": 2.0,
+        "vitamins": {
+          "Vitamin A": 16000,
+          "Vitamin D": 1100,
+          "Vitamin E": 200
+        },
+        "minerals": {
+          "Calcium": 1.0,
+          "Phosphorus": 0.8,
+          "Iron": 175
+        }
+      },
+      "suitableAges": ["senior"],
+      "suitableBreedSizes": ["medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Joint Health Support", "Cognitive Function Support", "Reduced Calories"],
+      "imageUrl": "https://example.com/images/senior-vitality.jpg",
+      "packageSizes": ["5lb", "15lb", "28lb"]
+    },
+    {
+      "id": "p4",
+      "name": "Organic Chicken Stew",
+      "brandId": "b2",
+      "productLine": "Organic Bowls",
+      "type": "wet",
+      "priceRange": {
+        "min": 3.99,
+        "max": 42.99,
+        "currency": "USD"
+      },
+      "description": "Human-grade wet food made with organic ingredients",
+      "ingredients": [
+        {
+          "name": "Organic Chicken",
+          "description": "Certified organic chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Organic Sweet Potatoes",
+          "description": "Certified organic sweet potatoes",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Organic Peas",
+          "description": "Certified organic peas",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Organic Carrots",
+          "description": "Certified organic carrots",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 310,
+        "protein": 9,
+        "fat": 6,
+        "fiber": 1,
+        "moisture": 82,
+        "carbohydrates": 2,
+        "omega3": 0.2,
+        "omega6": 1.0,
+        "vitamins": {
+          "Vitamin A": 5000,
+          "Vitamin D": 500,
+          "Vitamin E": 60
+        },
+        "minerals": {
+          "Calcium": 0.3,
+          "Phosphorus": 0.25,
+          "Iron": 80
+        }
+      },
+      "suitableAges": ["adult", "senior"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["organic", "natural"],
+      "specialFeatures": ["Human Grade", "Limited Ingredients"],
+      "imageUrl": "https://example.com/images/organic-chicken-stew.jpg",
+      "packageSizes": ["12.5oz can", "case of 12"]
+    },
+    {
+      "id": "p5",
+      "name": "Grain-Free Salmon Formula",
+      "brandId": "b2",
+      "productLine": "Pure Elements",
+      "type": "dry",
+      "priceRange": {
+        "min": 59.99,
+        "max": 119.99,
+        "currency": "USD"
+      },
+      "description": "Grain-free recipe with wild-caught salmon for sensitive dogs",
+      "ingredients": [
+        {
+          "name": "Salmon",
+          "description": "Wild-caught salmon",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Sweet Potatoes",
+          "description": "Whole sweet potatoes",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Peas",
+          "description": "Whole peas",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Salmon Oil",
+          "description": "Cold-pressed salmon oil",
+          "potentialAllergen": true,
+          "source": "animal"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 390,
+        "protein": 32,
+        "fat": 18,
+        "fiber": 3.5,
+        "moisture": 10,
+        "carbohydrates": 36.5,
+        "omega3": 1.5,
+        "omega6": 2.0,
+        "vitamins": {
+          "Vitamin A": 14000,
+          "Vitamin D": 1200,
+          "Vitamin E": 180
+        },
+        "minerals": {
+          "Calcium": 1.2,
+          "Phosphorus": 1.0,
+          "Iron": 160
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["grain-free", "natural"],
+      "specialFeatures": ["Skin & Coat Health", "Sensitive Stomach"],
+      "imageUrl": "https://example.com/images/grain-free-salmon.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p6",
+      "name": "Weight Management Formula",
+      "brandId": "b3",
+      "productLine": "Specific Care",
+      "type": "dry",
+      "priceRange": {
+        "min": 52.99,
+        "max": 99.99,
+        "currency": "USD"
+      },
+      "description": "Reduced-calorie formula to help maintain healthy weight",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Pea Fiber",
+          "description": "Natural source of fiber",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "L-Carnitine",
+          "description": "Amino acid for fat metabolism",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 290,
+        "protein": 28,
+        "fat": 10,
+        "fiber": 8,
+        "moisture": 10,
+        "carbohydrates": 44,
+        "omega3": 0.4,
+        "omega6": 1.8,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 150
+        },
+        "minerals": {
+          "Calcium": 1.1,
+          "Phosphorus": 0.9,
+          "Iron": 175
+        }
+      },
+      "suitableAges": ["adult", "senior"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["weight-management", "natural"],
+      "specialFeatures": ["Reduced Calories", "Increased Fiber", "Lean Muscle Support"],
+      "imageUrl": "https://example.com/images/weight-management.jpg",
+      "packageSizes": ["5lb", "15lb", "25lb"]
+    },
+    {
+      "id": "p7",
+      "name": "Small Breed Puppy",
+      "brandId": "b3",
+      "productLine": "Breed Specific",
+      "type": "dry",
+      "priceRange": {
+        "min": 54.99,
+        "max": 89.99,
+        "currency": "USD"
+      },
+      "description": "Specially formulated nutrition for small breed puppies",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Chicken Meal",
+          "description": "Concentrated protein source",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Fish Oil",
+          "description": "Source of DHA for brain development",
+          "potentialAllergen": false,
+          "source": "animal"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 410,
+        "protein": 32,
+        "fat": 22,
+        "fiber": 3,
+        "moisture": 10,
+        "carbohydrates": 33,
+        "omega3": 1.0,
+        "omega6": 3.2,
+        "vitamins": {
+          "Vitamin A": 18000,
+          "Vitamin D": 1300,
+          "Vitamin E": 180
+        },
+        "minerals": {
+          "Calcium": 1.5,
+          "Phosphorus": 1.2,
+          "Iron": 200
+        }
+      },
+      "suitableAges": ["puppy"],
+      "suitableBreedSizes": ["small"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Small Kibble Size", "Brain Development", "Dental Health"],
+      "imageUrl": "https://example.com/images/small-breed-puppy.jpg",
+      "packageSizes": ["4lb", "10lb", "15lb"]
+    },
+    {
+      "id": "p8",
+      "name": "Large Breed Adult",
+      "brandId": "b3",
+      "productLine": "Breed Specific",
+      "type": "dry",
+      "priceRange": {
+        "min": 54.99,
+        "max": 99.99,
+        "currency": "USD"
+      },
+      "description": "Specialized formula for large breed adult dogs",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Glucosamine",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        },
+        {
+          "name": "Chondroitin",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 350,
+        "protein": 25,
+        "fat": 15,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 46,
+        "omega3": 0.6,
+        "omega6": 2.5,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 150
+        },
+        "minerals": {
+          "Calcium": 1.0,
+          "Phosphorus": 0.8,
+          "Iron": 180
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Joint Health Support", "Controlled Calories", "Balanced Minerals"],
+      "imageUrl": "https://example.com/images/large-breed-adult.jpg",
+      "packageSizes": ["15lb", "30lb", "40lb"]
+    },
+    {
+      "id": "p9",
+      "name": "Wild Venison & Bison",
+      "brandId": "b4",
+      "productLine": "Ancestral Diet",
+      "type": "dry",
+      "priceRange": {
+        "min": 69.99,
+        "max": 129.99,
+        "currency": "USD"
+      },
+      "description": "High-protein, grain-free formula inspired by ancestral canine diets",
+      "ingredients": [
+        {
+          "name": "Venison",
+          "description": "Fresh wild venison",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Bison",
+          "description": "Fresh wild bison",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Sweet Potatoes",
+          "description": "Whole sweet potatoes",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Peas",
+          "description": "Whole peas",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 420,
+        "protein": 38,
+        "fat": 20,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 28,
+        "omega3": 0.8,
+        "omega6": 2.8,
+        "vitamins": {
+          "Vitamin A": 16000,
+          "Vitamin D": 1100,
+          "Vitamin E": 160
+        },
+        "minerals": {
+          "Calcium": 1.3,
+          "Phosphorus": 1.0,
+          "Iron": 190
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["grain-free", "high-protein", "natural"],
+      "specialFeatures": ["Novel Protein", "Limited Ingredients", "Allergy Friendly"],
+      "imageUrl": "https://example.com/images/wild-venison-bison.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p10",
+      "name": "Freeze-Dried Raw Turkey",
+      "brandId": "b4",
+      "productLine": "Raw Essentials",
+      "type": "freeze-dried",
+      "priceRange": {
+        "min": 29.99,
+        "max": 89.99,
+        "currency": "USD"
+      },
+      "description": "Raw nutrition with the convenience of freeze-dried preparation",
+      "ingredients": [
+        {
+          "name": "Turkey",
+          "description": "Ground raw turkey with bone",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Turkey Heart",
+          "description": "Raw turkey heart",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Turkey Liver",
+          "description": "Raw turkey liver",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Organic Kale",
+          "description": "Organic raw kale",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 450,
+        "protein": 40,
+        "fat": 30,
+        "fiber": 2,
+        "moisture": 4,
+        "carbohydrates": 24,
+        "omega3": 1.0,
+        "omega6": 3.0,
+        "vitamins": {
+          "Vitamin A": 18000,
+          "Vitamin D": 1400,
+          "Vitamin E": 200
+        },
+        "minerals": {
+          "Calcium": 1.5,
+          "Phosphorus": 1.2,
+          "Iron": 210
+        }
+      },
+      "suitableAges": ["adult", "puppy"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["grain-free", "raw", "high-protein"],
+      "specialFeatures": ["Minimally Processed", "All Life Stages", "Complete & Balanced"],
+      "imageUrl": "https://example.com/images/freeze-dried-raw-turkey.jpg",
+      "packageSizes": ["14oz", "28oz", "48oz"]
+    },
+    {
+      "id": "p11",
+      "name": "Wild Caught Salmon Stew",
+      "brandId": "b4",
+      "productLine": "Natural Bowls",
+      "type": "wet",
+      "priceRange": {
+        "min": 4.49,
+        "max": 48.99,
+        "currency": "USD"
+      },
+      "description": "Grain-free wet food with wild-caught salmon and fresh vegetables",
+      "ingredients": [
+        {
+          "name": "Salmon",
+          "description": "Wild-caught salmon",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Sweet Potatoes",
+          "description": "Whole sweet potatoes",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Carrots",
+          "description": "Fresh carrots",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Green Beans",
+          "description": "Fresh green beans",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 320,
+        "protein": 10,
+        "fat": 7,
+        "fiber": 1,
+        "moisture": 78,
+        "carbohydrates": 4,
+        "omega3": 1.2,
+        "omega6": 0.9,
+        "vitamins": {
+          "Vitamin A": 6000,
+          "Vitamin D": 600,
+          "Vitamin E": 70
+        },
+        "minerals": {
+          "Calcium": 0.4,
+          "Phosphorus": 0.3,
+          "Iron": 90
+        }
+      },
+      "suitableAges": ["adult", "senior"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["grain-free", "natural"],
+      "specialFeatures": ["Skin & Coat Health", "Omega-Rich", "Limited Ingredients"],
+      "imageUrl": "https://example.com/images/salmon-stew.jpg",
+      "packageSizes": ["12.5oz can", "case of 12"]
+    },
+    {
+      "id": "p12",
+      "name": "Grain-Free Duck & Potato",
+      "brandId": "b4",
+      "productLine": "Ancestral Diet",
+      "type": "dry",
+      "priceRange": {
+        "min": 64.99,
+        "max": 119.99,
+        "currency": "USD"
+      },
+      "description": "Novel protein formula for dogs with food sensitivities",
+      "ingredients": [
+        {
+          "name": "Duck",
+          "description": "Fresh deboned duck",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Duck Meal",
+          "description": "Concentrated protein source",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Potatoes",
+          "description": "Whole potatoes",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Peas",
+          "description": "Whole peas",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 400,
+        "protein": 30,
+        "fat": 18,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 38,
+        "omega3": 0.6,
+        "omega6": 2.4,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 150
+        },
+        "minerals": {
+          "Calcium": 1.2,
+          "Phosphorus": 0.9,
+          "Iron": 180
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["grain-free", "natural", "limited-ingredient"],
+      "specialFeatures": ["Novel Protein", "Food Sensitivities", "Skin & Coat Health"],
+      "imageUrl": "https://example.com/images/duck-potato.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p13",
+      "name": "Sensitive Skin & Stomach",
+      "brandId": "b5",
+      "productLine": "Veterinary Formulas",
+      "type": "dry",
+      "priceRange": {
+        "min": 59.99,
+        "max": 109.99,
+        "currency": "USD"
+      },
+      "description": "Specially formulated for dogs with sensitive digestion and skin issues",
+      "ingredients": [
+        {
+          "name": "Salmon",
+          "description": "Fresh deboned salmon",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Rice",
+          "description": "Whole grain rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Oatmeal",
+          "description": "Whole grain oats",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Prebiotics",
+          "description": "Digestive health support",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 360,
+        "protein": 26,
+        "fat": 16,
+        "fiber": 5,
+        "moisture": 10,
+        "carbohydrates": 43,
+        "omega3": 1.0,
+        "omega6": 2.2,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 200
+        },
+        "minerals": {
+          "Calcium": 1.1,
+          "Phosphorus": 0.9,
+          "Iron": 175
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["sensitive-stomach", "natural"],
+      "specialFeatures": ["Digestive Support", "Skin & Coat Health", "Prebiotic Fiber"],
+      "imageUrl": "https://example.com/images/sensitive-skin-stomach.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p14",
+      "name": "Joint & Mobility Support",
+      "brandId": "b5",
+      "productLine": "Veterinary Formulas",
+      "type": "dry",
+      "priceRange": {
+        "min": 64.99,
+        "max": 119.99,
+        "currency": "USD"
+      },
+      "description": "Enhanced with glucosamine and chondroitin for joint health",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Glucosamine",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        },
+        {
+          "name": "Chondroitin",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 350,
+        "protein": 26,
+        "fat": 14,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 46,
+        "omega3": 0.7,
+        "omega6": 2.3,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 180
+        },
+        "minerals": {
+          "Calcium": 1.1,
+          "Phosphorus": 0.9,
+          "Iron": 180
+        }
+      },
+      "suitableAges": ["adult", "senior"],
+      "suitableBreedSizes": ["medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Joint Health Support", "Mobility Aid", "Anti-Inflammatory"],
+      "imageUrl": "https://example.com/images/joint-mobility.jpg",
+      "packageSizes": ["5lb", "15lb", "30lb"]
+    },
+    {
+      "id": "p15",
+      "name": "Dental Health Formula",
+      "brandId": "b5",
+      "productLine": "Veterinary Formulas",
+      "type": "dry",
+      "priceRange": {
+        "min": 54.99,
+        "max": 99.99,
+        "currency": "USD"
+      },
+      "description": "Specially formulated kibble that helps clean teeth and freshen breath",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Sodium Hexametaphosphate",
+          "description": "Tartar control agent",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        },
+        {
+          "name": "Parsley",
+          "description": "Natural breath freshener",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 340,
+        "protein": 25,
+        "fat": 14,
+        "fiber": 5,
+        "moisture": 10,
+        "carbohydrates": 46,
+        "omega3": 0.5,
+        "omega6": 2.0,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 150
+        },
+        "minerals": {
+          "Calcium": 1.2,
+          "Phosphorus": 0.9,
+          "Iron": 175
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Dental Care", "Breath Freshening", "Tartar Control"],
+      "imageUrl": "https://example.com/images/dental-health.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p16",
+      "name": "Allergy Care Lamb & Rice",
+      "brandId": "b5",
+      "productLine": "Veterinary Formulas",
+      "type": "dry",
+      "priceRange": {
+        "min": 62.99,
+        "max": 114.99,
+        "currency": "USD"
+      },
+      "description": "Limited ingredient formula for dogs with food allergies",
+      "ingredients": [
+        {
+          "name": "Lamb",
+          "description": "Fresh deboned lamb",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Lamb Meal",
+          "description": "Concentrated protein source",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Rice Bran",
+          "description": "Fiber source",
+          "potentialAllergen": false,
+          "source": "plant"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 360,
+        "protein": 22,
+        "fat": 15,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 49,
+        "omega3": 0.4,
+        "omega6": 1.8,
+        "vitamins": {
+          "Vitamin A": 14000,
+          "Vitamin D": 950,
+          "Vitamin E": 140
+        },
+        "minerals": {
+          "Calcium": 1.0,
+          "Phosphorus": 0.8,
+          "Iron": 170
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["limited-ingredient", "natural"],
+      "specialFeatures": ["Allergy Management", "Skin & Coat Health", "Novel Protein"],
+      "imageUrl": "https://example.com/images/allergy-care.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p17",
+      "name": "Digestive Care Formula",
+      "brandId": "b5",
+      "productLine": "Veterinary Formulas",
+      "type": "dry",
+      "priceRange": {
+        "min": 59.99,
+        "max": 109.99,
+        "currency": "USD"
+      },
+      "description": "Highly digestible formula for dogs with sensitive stomachs",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "White Rice",
+          "description": "Easily digestible white rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Prebiotics",
+          "description": "For gut health",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        },
+        {
+          "name": "Probiotics",
+          "description": "For gut health",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 330,
+        "protein": 23,
+        "fat": 13,
+        "fiber": 3,
+        "moisture": 10,
+        "carbohydrates": 51,
+        "omega3": 0.4,
+        "omega6": 1.8,
+        "vitamins": {
+          "Vitamin A": 14000,
+          "Vitamin D": 950,
+          "Vitamin E": 140
+        },
+        "minerals": {
+          "Calcium": 1.0,
+          "Phosphorus": 0.8,
+          "Iron": 170
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["sensitive-stomach", "natural"],
+      "specialFeatures": ["Digestive Support", "Prebiotics & Probiotics", "Easily Digestible"],
+      "imageUrl": "https://example.com/images/digestive-care.jpg",
+      "packageSizes": ["4lb", "12lb", "24lb"]
+    },
+    {
+      "id": "p18",
+      "name": "Puppy Lamb & Rice Wet Food",
+      "brandId": "b1",
+      "productLine": "Life Stage Nutrition",
+      "type": "wet",
+      "priceRange": {
+        "min": 2.99,
+        "max": 35.99,
+        "currency": "USD"
+      },
+      "description": "Moist and nutritious formula for growing puppies",
+      "ingredients": [
+        {
+          "name": "Lamb",
+          "description": "Fresh deboned lamb",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Carrots",
+          "description": "Fresh carrots",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Fish Oil",
+          "description": "Source of DHA for brain development",
+          "potentialAllergen": false,
+          "source": "animal"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 340,
+        "protein": 9,
+        "fat": 7,
+        "fiber": 1,
+        "moisture": 78,
+        "carbohydrates": 5,
+        "omega3": 0.8,
+        "omega6": 1.5,
+        "vitamins": {
+          "Vitamin A": 6000,
+          "Vitamin D": 600,
+          "Vitamin E": 80
+        },
+        "minerals": {
+          "Calcium": 0.4,
+          "Phosphorus": 0.3,
+          "Iron": 85
+        }
+      },
+      "suitableAges": ["puppy"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Brain Development", "Bone Growth", "Immune Support"],
+      "imageUrl": "https://example.com/images/puppy-lamb-rice-wet.jpg",
+      "packageSizes": ["12.5oz can", "case of 12"]
+    },
+    {
+      "id": "p19",
+      "name": "Senior Chicken Wet Food",
+      "brandId": "b1",
+      "productLine": "Life Stage Nutrition",
+      "type": "wet",
+      "priceRange": {
+        "min": 2.99,
+        "max": 35.99,
+        "currency": "USD"
+      },
+      "description": "Soft and palatable wet food formula for senior dogs",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "description": "Fresh deboned chicken",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Brown Rice",
+          "description": "Whole grain brown rice",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Peas",
+          "description": "Fresh peas",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Glucosamine",
+          "description": "Joint health supplement",
+          "potentialAllergen": false,
+          "source": "synthetic"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 320,
+        "protein": 8,
+        "fat": 5,
+        "fiber": 2,
+        "moisture": 80,
+        "carbohydrates": 5,
+        "omega3": 0.6,
+        "omega6": 1.4,
+        "vitamins": {
+          "Vitamin A": 5500,
+          "Vitamin D": 550,
+          "Vitamin E": 75
+        },
+        "minerals": {
+          "Calcium": 0.35,
+          "Phosphorus": 0.25,
+          "Iron": 80
+        }
+      },
+      "suitableAges": ["senior"],
+      "suitableBreedSizes": ["small", "medium", "large"],
+      "dietaryIndicators": ["natural"],
+      "specialFeatures": ["Joint Health Support", "Dental Friendly", "Easily Digestible"],
+      "imageUrl": "https://example.com/images/senior-chicken-wet.jpg",
+      "packageSizes": ["12.5oz can", "case of 12"]
+    },
+    {
+      "id": "p20",
+      "name": "Small Breed Adult Fish & Sweet Potato",
+      "brandId": "b2",
+      "productLine": "Breed Specific",
+      "type": "dry",
+      "priceRange": {
+        "min": 49.99,
+        "max": 89.99,
+        "currency": "USD"
+      },
+      "description": "Small kibble size with fish protein for small breed adults",
+      "ingredients": [
+        {
+          "name": "Whitefish",
+          "description": "Fresh deboned whitefish",
+          "potentialAllergen": true,
+          "source": "animal"
+        },
+        {
+          "name": "Sweet Potato",
+          "description": "Whole sweet potato",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Peas",
+          "description": "Whole peas",
+          "potentialAllergen": false,
+          "source": "plant"
+        },
+        {
+          "name": "Fish Oil",
+          "description": "Source of omega fatty acids",
+          "potentialAllergen": false,
+          "source": "animal"
+        }
+      ],
+      "nutritionalValue": {
+        "caloriesPerCup": 380,
+        "protein": 28,
+        "fat": 17,
+        "fiber": 4,
+        "moisture": 10,
+        "carbohydrates": 41,
+        "omega3": 1.0,
+        "omega6": 2.2,
+        "vitamins": {
+          "Vitamin A": 15000,
+          "Vitamin D": 1000,
+          "Vitamin E": 150
+        },
+        "minerals": {
+          "Calcium": 1.1,
+          "Phosphorus": 0.9,
+          "Iron": 175
+        }
+      },
+      "suitableAges": ["adult"],
+      "suitableBreedSizes": ["small"],
+      "dietaryIndicators": ["grain-free", "natural"],
+      "specialFeatures": ["Small Kibble Size", "Skin & Coat Health", "Dental Care"],
+      "imageUrl": "https://example.com/images/small-breed-fish.jpg",
+      "packageSizes": ["4lb", "10lb", "16lb"]
+    }
+  ]
+} 

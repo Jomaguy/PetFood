@@ -1,6 +1,8 @@
 import '../styles/globals.css';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
+import { Providers } from './providers';
+import StyledComponentsRegistry from '@/lib/registry';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,7 +18,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <StyledComponentsRegistry>
+          <Providers>
+            {children}
+          </Providers>
+        </StyledComponentsRegistry>
+      </body>
     </html>
   );
 } 

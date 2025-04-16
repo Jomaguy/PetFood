@@ -1,28 +1,22 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import Select from '../atoms/Select';
-import FormGroup from './FormGroup';
-import Label from './Label';
+import Select from 'react-select';
 
-type OptionType = {
+export interface SelectOption {
   value: string;
   label: string;
-  disabled?: boolean;
-};
+}
 
-interface FormSelectProps {
+export interface FormSelectProps {
   name: string;
-  label?: string;
-  options: OptionType[];
+  label: string;
+  options: SelectOption[];
   placeholder?: string;
   required?: boolean;
-  helpText?: string;
+  error?: string;
+  helperText?: string;
+  isSearchable?: boolean;
   className?: string;
-  selectClassName?: string;
-  disabled?: boolean;
-  hideLabel?: boolean;
-  onBlur?: () => void;
-  onChange?: (value: string) => void;
 }
 
 export const FormSelect: React.FC<FormSelectProps> = ({
@@ -30,53 +24,78 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   label,
   options,
   placeholder,
-  required = false,
-  helpText,
+  required,
+  error,
+  helperText,
+  isSearchable = false,
   className = '',
-  selectClassName = '',
-  disabled = false,
-  hideLabel = false,
-  onBlur,
-  onChange,
 }) => {
-  const { control, formState: { errors } } = useFormContext();
-  const error = errors[name]?.message as string | undefined;
+  const { control } = useFormContext();
 
   return (
-    <FormGroup className={className} error={error} helpText={helpText}>
-      {label && !hideLabel && (
-        <Label htmlFor={name} required={required}>
+    <div className="form-control w-full">
+      <label className="block mb-2" htmlFor={name}>
+        <span className="text-gray-700 font-medium text-sm">
           {label}
-        </Label>
-      )}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </span>
+      </label>
       
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
           <Select
-            id={name}
+            {...field}
             options={options}
             placeholder={placeholder}
-            className={selectClassName}
-            disabled={disabled}
-            required={required}
-            error={error}
-            ariaLabel={hideLabel ? label : undefined}
-            {...field}
-            value={field.value || ''}
-            onChange={(e) => {
-              field.onChange(e);
-              onChange?.(e.target.value);
-            }}
-            onBlur={(e) => {
-              field.onBlur();
-              onBlur?.();
+            isSearchable={isSearchable}
+            className={`${className}`}
+            classNamePrefix="select"
+            value={options.find(option => option.value === field.value) || null}
+            onChange={(option) => field.onChange(option?.value)}
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                borderColor: error ? '#ef4444' : state.isFocused ? '#3b82f6' : '#d1d5db',
+                boxShadow: state.isFocused ? '0 0 0 1px #3b82f6' : 'none',
+                '&:hover': {
+                  borderColor: error ? '#ef4444' : '#3b82f6'
+                }
+              }),
+              menu: (base) => ({
+                ...base,
+                zIndex: 50
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isSelected ? '#3b82f6' : state.isFocused ? '#e5e7eb' : 'white',
+                color: state.isSelected ? 'white' : '#111827',
+                '&:active': {
+                  backgroundColor: '#3b82f6'
+                }
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: '#111827'
+              }),
+              input: (base) => ({
+                ...base,
+                color: '#111827'
+              })
             }}
           />
         )}
       />
-    </FormGroup>
+      
+      {helperText && !error && (
+        <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+      )}
+      
+      {error && (
+        <p className="mt-1 text-sm text-red-600">{error}</p>
+      )}
+    </div>
   );
 };
 

@@ -1,62 +1,69 @@
-import React from 'react';
+import styled, { css } from 'styled-components';
+
+type ButtonVariant = 'primary' | 'secondary' | 'outline';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'text';
-  type?: 'button' | 'submit' | 'reset';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   fullWidth?: boolean;
-  className?: string;
-  ariaLabel?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  onClick,
-  variant = 'primary',
-  type = 'button',
-  size = 'md',
-  disabled = false,
-  fullWidth = false,
-  className = '',
-  ariaLabel,
-}) => {
-  // Base classes for all buttons
-  const baseClasses = 'font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors';
-  
-  // Size classes
-  const sizeClasses = {
-    sm: 'py-1 px-2 text-sm',
-    md: 'py-2 px-4 text-base',
-    lg: 'py-3 px-6 text-lg',
-  };
-  
-  // Variant classes
-  const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-400',
-    text: 'bg-transparent hover:bg-gray-100 text-blue-600 hover:text-blue-700 focus:ring-blue-500',
-  };
-
-  // Full width class
-  const widthClass = fullWidth ? 'w-full' : '';
-  
-  // Disabled class
-  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
-
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={ariaLabel}
-      className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${widthClass} ${disabledClass} ${className}`}
-    >
-      {children}
-    </button>
-  );
+const getSizeStyles = (size: ButtonSize) => {
+  switch (size) {
+    case 'sm':
+      return css`
+        padding: ${({ theme }) => `${theme.space.xs} ${theme.space.sm}`};
+        font-size: ${({ theme }) => theme.fontSizes.sm};
+      `;
+    case 'lg':
+      return css`
+        padding: ${({ theme }) => `${theme.space.md} ${theme.space.lg}`};
+        font-size: ${({ theme }) => theme.fontSizes.lg};
+      `;
+    default:
+      return css`
+        padding: ${({ theme }) => `${theme.space.sm} ${theme.space.md}`};
+        font-size: ${({ theme }) => theme.fontSizes.md};
+      `;
+  }
 };
+
+export const Button = styled.button<ButtonProps>`
+  border: none;
+  border-radius: ${({ theme }) => theme.radii.md};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  
+  ${({ variant = 'primary', theme }) => {
+    const styles = theme.components.button[variant];
+    return css`
+      background-color: ${styles.bg};
+      color: ${styles.color};
+      border: ${variant === 'outline' ? `2px solid ${styles.borderColor}` : 'none'};
+      
+      &:hover {
+        background-color: ${styles.hoverBg};
+      }
+      
+      &:active {
+        background-color: ${styles.activeBg || styles.hoverBg};
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    `;
+  }}
+  
+  ${({ size = 'md' }) => getSizeStyles(size)}
+  
+  ${({ fullWidth }) => fullWidth && css`
+    width: 100%;
+  `}
+`;
 
 export default Button; 

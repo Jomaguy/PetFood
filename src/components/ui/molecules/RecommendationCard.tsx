@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Card } from '../atoms/Card';
 import { Button } from '../atoms/Button';
+import { ChevronDownIcon, ChevronUpIcon, HeartIcon } from '@heroicons/react/24/outline';
+import { NutritionalInfo, NutritionalValue } from './NutritionalInfo';
+import { IngredientsList, Ingredient } from './IngredientsList';
+import { useUserPreferences } from '@/context/UserPreferencesContext';
 
 export interface RecommendationCardProps {
   id: string;
@@ -15,6 +19,10 @@ export interface RecommendationCardProps {
   onClick?: (id: string) => void;
   className?: string;
   isLoading?: boolean;
+  ingredients?: string[] | Ingredient[]; // List of main ingredients - can be simple strings or Ingredient objects with highlighting
+  nutritionalHighlights?: NutritionalValue;
+  explanations?: string[] | { text: string; importance: 'high' | 'medium' | 'low' }[]; // Reasons why this food is recommended
+  dietaryFeatures?: string[]; // Special features like "grain-free", "high-protein", etc.
 }
 
 export const RecommendationCard: React.FC<RecommendationCardProps> = ({
@@ -29,12 +37,37 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   onClick,
   className = '',
   isLoading = false,
+  ingredients = [],
+  nutritionalHighlights,
+  explanations = [],
+  dietaryFeatures = []
 }) => {
+  const [expanded, setExpanded] = useState(false);
+  const { isRecommendationSaved, toggleSavedRecommendation } = useUserPreferences();
+  
   const handleClick = () => {
     if (onClick && !isLoading) {
       onClick(id);
     }
   };
+  
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card onClick from firing
+    setExpanded(!expanded);
+  };
+
+  const handleSaveClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card onClick from firing
+    toggleSavedRecommendation(id);
+  };
+
+  // Process explanations to handle both string[] and object[] formats
+  const formattedExplanations = explanations.map(explanation => {
+    if (typeof explanation === 'string') {
+      return { text: explanation, importance: 'medium' as const };
+    }
+    return explanation as { text: string; importance: 'high' | 'medium' | 'low' };
+  });
 
   // Loading state skeleton
   if (isLoading) {
@@ -55,10 +88,19 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
     );
   }
 
+  // Get importance color class for explanations
+  const getImportanceClass = (importance: 'high' | 'medium' | 'low') => {
+    switch (importance) {
+      case 'high': return 'before:bg-green-500';
+      case 'medium': return 'before:bg-blue-400';
+      case 'low': return 'before:bg-gray-400';
+      default: return 'before:bg-blue-400';
+    }
+  };
+
   return (
     <Card 
-      className={`overflow-hidden transition-transform hover:shadow-lg ${className}`} 
-      onClick={handleClick}
+      className={`overflow-hidden transition-transform hover:shadow-lg ${className}`}
     >
       {/* Image container */}
       <div className="relative h-48 overflow-hidden">
@@ -76,7 +118,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
         )}
       </div>
       
-      {/* Content */}
+      {/* Basic Content */}
       <div className="p-4">
         <h3 className="text-lg font-bold text-gray-900 mb-1">{title}</h3>
         <p className="text-sm text-gray-600 mb-2">{brand}</p>
@@ -110,18 +152,102 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
         {/* Description */}
         <p className="text-gray-700 text-sm mb-3">{description}</p>
         
+        {/* Dietary Features Tags */}
+        {dietaryFeatures.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {dietaryFeatures.map((feature, index) => (
+              <span key={index} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                {feature}
+              </span>
+            ))}
+          </div>
+        )}
+        
+        {/* Expand/Collapse Button */}
+        <button 
+          onClick={toggleExpand}
+          className="w-full flex items-center justify-center p-2 text-sm text-gray-700 hover:bg-gray-50 rounded mb-3"
+          aria-expanded={expanded}
+          aria-controls={`expandable-content-${id}`}
+        >
+          {expanded ? (
+            <>
+              <ChevronUpIcon className="w-4 h-4 mr-1" />
+              Show Less
+            </>
+          ) : (
+            <>
+              <ChevronDownIcon className="w-4 h-4 mr-1" />
+              Show Details
+            </>
+          )}
+        </button>
+        
+        {/* Expandable Content */}
+        <div 
+          id={`expandable-content-${id}`}
+          className={`transition-all duration-300 overflow-hidden ${expanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+        >
+          {/* Divider */}
+          <div className="border-t border-gray-200 my-3"></div>
+          
+          {/* Explanation Section */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-900 mb-3">Why this food is recommended</h4>
+            {formattedExplanations.length > 0 ? (
+              <ul className="space-y-3">
+                {formattedExplanations.map((explanation, index) => (
+                  <li 
+                    key={index} 
+                    className={`relative pl-6 text-sm text-gray-700 before:content-[''] before:absolute before:left-0 before:top-[0.4rem] before:w-3 before:h-3 before:rounded-full ${getImportanceClass(explanation.importance)}`}
+                  >
+                    {explanation.text}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-500 italic">No specific explanations available for this recommendation.</p>
+            )}
+          </div>
+          
+          {/* Nutritional Information Section */}
+          <div className="mb-6">
+            <h4 className="font-medium text-gray-900 mb-3">Nutritional Information</h4>
+            {nutritionalHighlights ? (
+              <NutritionalInfo nutritionalValues={nutritionalHighlights} />
+            ) : (
+              <p className="text-sm text-gray-500 italic">Nutritional information not available for this product.</p>
+            )}
+          </div>
+          
+          {/* Ingredients Section */}
+          <div className="mb-4">
+            <h4 className="font-medium text-gray-900 mb-3">Main Ingredients</h4>
+            <IngredientsList ingredients={ingredients} />
+          </div>
+        </div>
+        
         {/* Price and action */}
         <div className="flex items-center justify-between mt-4">
           {price && (
             <p className="font-bold text-gray-900">{price}</p>
           )}
-          <Button 
-            variant="primary" 
-            className="ml-auto"
-            onClick={handleClick}
-          >
-            View Details
-          </Button>
+          <div className="flex gap-2 ml-auto">
+            <Button 
+              variant="secondary" 
+              onClick={handleSaveClick}
+              className="flex items-center"
+            >
+              <HeartIcon className={`h-5 w-5 mr-1 ${isRecommendationSaved(id) ? 'text-red-500 fill-red-500' : ''}`} />
+              {isRecommendationSaved(id) ? 'Saved' : 'Save'}
+            </Button>
+            <Button 
+              variant="primary" 
+              onClick={handleClick}
+            >
+              View Details
+            </Button>
+          </div>
         </div>
       </div>
     </Card>

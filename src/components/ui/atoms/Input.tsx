@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 interface InputProps {
   id: string;
@@ -11,7 +12,7 @@ interface InputProps {
   disabled?: boolean;
   required?: boolean;
   className?: string;
-  error?: string;
+  error?: boolean;
   fullWidth?: boolean;
   autoComplete?: string;
   min?: number;
@@ -20,57 +21,33 @@ interface InputProps {
   ariaDescribedBy?: string;
 }
 
-export const Input: React.FC<InputProps> = ({
-  id,
-  name,
-  type = 'text',
-  placeholder,
-  value,
-  onChange,
-  onBlur,
-  disabled = false,
-  required = false,
-  className = '',
-  error,
-  fullWidth = true,
-  autoComplete,
-  min,
-  max,
-  ariaLabel,
-  ariaDescribedBy,
-}) => {
-  const baseClasses = 'px-3 py-2 bg-white border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500';
-  const errorClasses = error ? 'border-red-500' : 'border-gray-300';
-  const disabledClasses = disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : '';
-  const widthClass = fullWidth ? 'w-full' : '';
+export const Input = styled.input<InputProps>`
+  background-color: ${({ theme }) => theme.components.input.bg};
+  border: ${({ theme }) => theme.borders.thin} ${({ theme, error }) => 
+    error ? theme.colors.error : theme.components.input.borderColor};
+  border-radius: ${({ theme }) => theme.radii.md};
+  padding: ${({ theme }) => `${theme.space.sm} ${theme.space.md}`};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  width: ${({ fullWidth }) => fullWidth ? '100%' : 'auto'};
+  transition: all 0.2s ease-in-out;
 
-  return (
-    <div className={`${widthClass}`}>
-      <input
-        id={id}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        disabled={disabled}
-        required={required}
-        autoComplete={autoComplete}
-        min={min}
-        max={max}
-        aria-label={ariaLabel}
-        aria-describedby={ariaDescribedBy}
-        aria-invalid={!!error}
-        className={`${baseClasses} ${errorClasses} ${disabledClasses} ${className}`}
-      />
-      {error && (
-        <p className="mt-1 text-sm text-red-600" id={`${id}-error`}>
-          {error}
-        </p>
-      )}
-    </div>
-  );
-};
+  &::placeholder {
+    color: ${({ theme }) => theme.components.input.placeholderColor};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.components.input.focusBorderColor};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primaryGreenLight}20;
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.gray100};
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+`;
 
 export default Input; 
