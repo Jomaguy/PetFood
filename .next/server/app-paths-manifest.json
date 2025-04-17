@@ -1,4 +1,6 @@
 {
-  "/page": "app/page.js",
-  "/create-profile/page": "app/create-profile/page.js"
+  "/dashboard/page": "app/dashboard/page.js",
+  "/create-profile/page": "app/create-profile/page.js",
+  "/recommendations/page": "app/recommendations/page.js",
+  "/page": "app/page.js"
 }

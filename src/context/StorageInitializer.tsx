@@ -5,6 +5,8 @@ import { useDogProfiles } from './DogProfileContext';
 import { useFoodDatabase } from './FoodDatabaseContext';
 import { useUserPreferences } from './UserPreferencesContext';
 import { clearAllStorageData, isLocalStorageAvailable } from '../utils/localStorage';
+import { StorageError, StorageErrorType, registerStorageErrorHandler, unregisterStorageErrorHandler } from '../utils/errorHandling';
+import { useStorageError } from './StorageErrorContext';
 
 interface StorageInitializerProps {
   children: ReactNode;
@@ -18,9 +20,18 @@ export function StorageInitializer({ children }: StorageInitializerProps) {
   const dogProfiles = useDogProfiles();
   const foodDatabase = useFoodDatabase();
   const userPreferences = useUserPreferences();
+  const { setError } = useStorageError();
   
   const [isInitialized, setIsInitialized] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  
+  // Register the error handler
+  useEffect(() => {
+    registerStorageErrorHandler(setError);
+    
+    return () => {
+      unregisterStorageErrorHandler();
+    };
+  }, [setError]);
   
   // Check if all context providers are initialized
   useEffect(() => {
@@ -37,14 +48,12 @@ export function StorageInitializer({ children }: StorageInitializerProps) {
   // Handle local storage errors
   useEffect(() => {
     if (!isLocalStorageAvailable()) {
-      setError(new Error('Local storage is not available. Changes will not be persisted.'));
+      setError(new StorageError(
+        'Local storage is not available. Changes will not be persisted.',
+        StorageErrorType.STORAGE_UNAVAILABLE
+      ));
     }
-  }, []);
-  
-  if (error) {
-    // Could display an error message here or just silently continue
-    console.error('Storage initialization error:', error);
-  }
+  }, [setError]);
   
   // Simple loading screen if needed
   if (!isInitialized) {

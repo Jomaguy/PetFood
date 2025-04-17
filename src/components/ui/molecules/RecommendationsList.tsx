@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { RecommendationCard } from './RecommendationCard';
 import { RecommendationFilters } from './RecommendationFilters';
@@ -173,23 +175,28 @@ export const RecommendationsList: React.FC<RecommendationsListProps> = ({ isLoad
   
   // Extract unique brands and dietary features for filters
   const availableBrands = useMemo(() => {
-    return [...new Set(sampleRecommendations.map(item => item.brand))];
+    return Array.from(new Set(sampleRecommendations.map(item => item.brand)));
   }, []);
   
   const availableDietaryFeatures = useMemo(() => {
     const allFeatures = sampleRecommendations.flatMap(item => item.dietaryFeatures || []);
-    return [...new Set(allFeatures)];
+    return Array.from(new Set(allFeatures));
   }, []);
   
   const commonIngredients = useMemo(() => {
     // Get all ingredients from all products
     const allIngredients = sampleRecommendations.flatMap(item => 
-      item.ingredients?.map(i => typeof i === 'string' ? i : i.name) || []
+      item.ingredients?.map(i => {
+        if (typeof i === 'string') return i;
+        return i?.name || '';
+      }) || []
     );
     
     // Count occurrences
     const counts = allIngredients.reduce((acc, ingredient) => {
-      acc[ingredient] = (acc[ingredient] || 0) + 1;
+      if (ingredient) {
+        acc[ingredient] = (acc[ingredient] || 0) + 1;
+      }
       return acc;
     }, {} as Record<string, number>);
     
@@ -199,8 +206,10 @@ export const RecommendationsList: React.FC<RecommendationsListProps> = ({ isLoad
       .map(([ingredient]) => ingredient);
   }, []);
   
-  // Get filter and sort preferences
-  const { filters, sort } = preferences.recommendationPreferences;
+  // Get filter and sort preferences with fallback to defaults
+  const { filters = DEFAULT_USER_PREFERENCES.recommendationPreferences.filters, 
+          sort = DEFAULT_USER_PREFERENCES.recommendationPreferences.sort 
+  } = preferences.recommendationPreferences || DEFAULT_USER_PREFERENCES.recommendationPreferences;
   
   // Toggle selection of a recommendation for comparison
   const toggleRecommendationSelection = (id: string) => {

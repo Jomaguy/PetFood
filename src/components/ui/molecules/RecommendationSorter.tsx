@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { ChevronDownIcon, ArrowsUpDownIcon } from '@heroicons/react/24/outline';
 import { useUserPreferences } from '@/context/UserPreferencesContext';

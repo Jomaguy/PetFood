@@ -7,8 +7,8 @@ import StyledComponentsRegistry from '@/lib/registry';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'PetFood - Dog Food Recommendations',
-  description: 'Get personalized dog food recommendations based on your dog\'s breed, age, and specific needs',
+  title: 'PetFood - Dog Nutrition App',
+  description: 'Get personalized dog food recommendations',
 };
 
 export default function RootLayout({

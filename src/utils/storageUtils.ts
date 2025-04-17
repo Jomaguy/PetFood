@@ -11,6 +11,7 @@ import {
 } from '../types/storageSchema';
 import { DogProfile } from '../types/dogProfile';
 import { FoodRecommendation } from './recommendationAlgorithm';
+import { StorageError, StorageErrorType, handleStorageError, tryCatchStorage } from './errorHandling';
 
 /**
  * Check if local storage is available
@@ -33,7 +34,7 @@ export function isStorageAvailable(): boolean {
  * @returns Object containing used space and available space (if possible to determine)
  */
 export function getStorageUsage(): { used: number; available?: number; percentUsed?: number } {
-  try {
+  const { result, error } = tryCatchStorage(() => {
     let totalSize = 0;
     
     // Estimate space used by iterating through all keys
@@ -56,10 +57,13 @@ export function getStorageUsage(): { used: number; available?: number; percentUs
       available: estimatedLimit - usedBytes,
       percentUsed: (usedBytes / estimatedLimit) * 100
     };
-  } catch (e) {
-    console.error('Error calculating storage usage:', e);
+  }, 'getStorageUsage');
+  
+  if (error) {
     return { used: 0 };
   }
+  
+  return result || { used: 0 };
 }
 
 /**
@@ -76,11 +80,14 @@ export function isStorageNearlyFull(thresholdPercent: number = 80): boolean {
  * Save data to local storage with versioning
  * @param key Storage key
  * @param data Data to save
- * @throws Error if storage is not available or saving fails
+ * @throws StorageError if storage is not available or saving fails
  */
 export function saveToStorage<T>(key: string, data: T): void {
   if (!isStorageAvailable()) {
-    throw new Error('Local storage is not available');
+    throw new StorageError(
+      'Local storage is not available',
+      StorageErrorType.STORAGE_UNAVAILABLE
+    );
   }
   
   // Check if storage is nearly full
@@ -99,8 +106,20 @@ export function saveToStorage<T>(key: string, data: T): void {
     // Serialize and save
     localStorage.setItem(key, JSON.stringify(storageData));
   } catch (error) {
-    console.error(`Error saving to storage (${key}):`, error);
-    throw new Error(`Failed to save data to storage: ${error instanceof Error ? error.message : String(error)}`);
+    // Determine if this is a quota error
+    if (error instanceof Error && error.name === 'QuotaExceededError') {
+      throw new StorageError(
+        'Storage quota exceeded',
+        StorageErrorType.STORAGE_QUOTA_EXCEEDED,
+        { originalError: error }
+      );
+    }
+    
+    throw handleStorageError(
+      error, 
+      `saveToStorage(${key})`, 
+      StorageErrorType.WRITE_ERROR
+    );
   }
 }
 
@@ -116,7 +135,7 @@ export function loadFromStorage<T>(key: string, defaultValue: BaseStorageSchema<
     return defaultValue;
   }
   
-  try {
+  const { result, error } = tryCatchStorage(() => {
     // Get serialized data
     const serialized = localStorage.getItem(key);
     
@@ -136,9 +155,47 @@ export function loadFromStorage<T>(key: string, defaultValue: BaseStorageSchema<
     }
     
     return parsedData;
-  } catch (error) {
-    console.error(`Error loading from storage (${key}):`, error);
+  }, `loadFromStorage(${key})`);
+  
+  if (error) {
+    // Attempt to recover from backup on error
+    const backupResult = tryRestoreItemFromBackup(key);
+    if (backupResult.success && backupResult.data) {
+      try {
+        const parsedBackup = JSON.parse(backupResult.data) as BaseStorageSchema<T>;
+        return parsedBackup;
+      } catch (e) {
+        // If backup parsing fails, return default
+        return defaultValue;
+      }
+    }
+    
     return defaultValue;
+  }
+  
+  return result || defaultValue;
+}
+
+/**
+ * Try to restore a single item from its backup
+ * @param key The key of the item to restore
+ * @returns Success status and data if successful
+ */
+function tryRestoreItemFromBackup(key: string): { success: boolean; data: string | null } {
+  try {
+    // Find backups for this specific key
+    const backupKey = `${StorageKey.BACKUP_PREFIX}${key}`;
+    const backupData = localStorage.getItem(backupKey);
+    
+    if (backupData) {
+      // Restore from backup
+      localStorage.setItem(key, backupData);
+      return { success: true, data: backupData };
+    }
+    
+    return { success: false, data: null };
+  } catch (e) {
+    return { success: false, data: null };
   }
 }
 
@@ -147,12 +204,14 @@ export function loadFromStorage<T>(key: string, defaultValue: BaseStorageSchema<
  * @returns true if backup successful, false otherwise
  */
 export function createBackup(): boolean {
-  if (!isStorageAvailable()) {
-    console.warn('Local storage is not available, cannot create backup');
-    return false;
-  }
-  
-  try {
+  const { result, error } = tryCatchStorage(() => {
+    if (!isStorageAvailable()) {
+      throw new StorageError(
+        'Local storage is not available, cannot create backup',
+        StorageErrorType.STORAGE_UNAVAILABLE
+      );
+    }
+    
     const timestamp = Date.now();
     const backupKey = `${StorageKey.BACKUP_PREFIX}${timestamp}`;
     
@@ -166,11 +225,24 @@ export function createBackup(): boolean {
     };
     
     localStorage.setItem(backupKey, JSON.stringify(backup));
+    
+    // Also create individual backups of each key
+    if (backup.dogProfiles) {
+      localStorage.setItem(`${StorageKey.BACKUP_PREFIX}${StorageKey.DOG_PROFILES}`, backup.dogProfiles);
+    }
+    
+    if (backup.savedRecommendations) {
+      localStorage.setItem(`${StorageKey.BACKUP_PREFIX}${StorageKey.SAVED_RECOMMENDATIONS}`, backup.savedRecommendations);
+    }
+    
+    if (backup.userPreferences) {
+      localStorage.setItem(`${StorageKey.BACKUP_PREFIX}${StorageKey.USER_PREFERENCES}`, backup.userPreferences);
+    }
+    
     return true;
-  } catch (error) {
-    console.error('Error creating backup:', error);
-    return false;
-  }
+  }, 'createBackup', StorageErrorType.BACKUP_ERROR);
+  
+  return result === true;
 }
 
 /**
@@ -178,36 +250,49 @@ export function createBackup(): boolean {
  * @returns true if restore successful, false otherwise
  */
 export function restoreFromBackup(): boolean {
-  if (!isStorageAvailable()) {
-    console.warn('Local storage is not available, cannot restore backup');
-    return false;
-  }
-  
-  try {
+  const { result, error } = tryCatchStorage(() => {
+    if (!isStorageAvailable()) {
+      throw new StorageError(
+        'Local storage is not available, cannot restore backup',
+        StorageErrorType.STORAGE_UNAVAILABLE
+      );
+    }
+    
     // Find the latest backup
     let latestBackupKey: string | null = null;
     let latestTimestamp = 0;
     
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(StorageKey.BACKUP_PREFIX)) {
-        const timestamp = parseInt(key.replace(StorageKey.BACKUP_PREFIX, ''), 10);
-        if (!isNaN(timestamp) && timestamp > latestTimestamp) {
-          latestTimestamp = timestamp;
-          latestBackupKey = key;
+      if (key && key.startsWith(StorageKey.BACKUP_PREFIX) && !key.includes(StorageKey.DOG_PROFILES) && 
+          !key.includes(StorageKey.SAVED_RECOMMENDATIONS) && !key.includes(StorageKey.USER_PREFERENCES)) {
+        try {
+          const timestamp = parseInt(key.replace(StorageKey.BACKUP_PREFIX, ''), 10);
+          if (!isNaN(timestamp) && timestamp > latestTimestamp) {
+            latestTimestamp = timestamp;
+            latestBackupKey = key;
+          }
+        } catch (e) {
+          // Skip keys that don't have valid timestamps
+          continue;
         }
       }
     }
     
     if (!latestBackupKey) {
-      console.warn('No backup found');
-      return false;
+      throw new StorageError(
+        'No backup found',
+        StorageErrorType.RESTORE_ERROR
+      );
     }
     
     // Restore from backup
     const serializedBackup = localStorage.getItem(latestBackupKey);
     if (!serializedBackup) {
-      return false;
+      throw new StorageError(
+        'Backup is empty or corrupted',
+        StorageErrorType.RESTORE_ERROR
+      );
     }
     
     const backup = JSON.parse(serializedBackup);
@@ -225,10 +310,9 @@ export function restoreFromBackup(): boolean {
     }
     
     return true;
-  } catch (error) {
-    console.error('Error restoring from backup:', error);
-    return false;
-  }
+  }, 'restoreFromBackup', StorageErrorType.RESTORE_ERROR);
+  
+  return result === true;
 }
 
 /**
@@ -237,20 +321,26 @@ export function restoreFromBackup(): boolean {
  * @returns number of backups removed
  */
 export function cleanupOldBackups(keepCount: number = 3): number {
-  if (!isStorageAvailable()) {
-    return 0;
-  }
-  
-  try {
+  const { result, error } = tryCatchStorage(() => {
+    if (!isStorageAvailable()) {
+      return 0;
+    }
+    
     // Find all backups and their timestamps
     const backups: { key: string; timestamp: number }[] = [];
     
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(StorageKey.BACKUP_PREFIX)) {
-        const timestamp = parseInt(key.replace(StorageKey.BACKUP_PREFIX, ''), 10);
-        if (!isNaN(timestamp)) {
-          backups.push({ key, timestamp });
+      if (key && key.startsWith(StorageKey.BACKUP_PREFIX) && !key.includes(StorageKey.DOG_PROFILES) && 
+          !key.includes(StorageKey.SAVED_RECOMMENDATIONS) && !key.includes(StorageKey.USER_PREFERENCES)) {
+        try {
+          const timestamp = parseInt(key.replace(StorageKey.BACKUP_PREFIX, ''), 10);
+          if (!isNaN(timestamp)) {
+            backups.push({ key, timestamp });
+          }
+        } catch (e) {
+          // Skip keys that don't have valid timestamps
+          continue;
         }
       }
     }
@@ -269,10 +359,9 @@ export function cleanupOldBackups(keepCount: number = 3): number {
     }
     
     return removedCount;
-  } catch (error) {
-    console.error('Error cleaning up old backups:', error);
-    return 0;
-  }
+  }, 'cleanupOldBackups');
+  
+  return result || 0;
 }
 
 /**
@@ -308,20 +397,26 @@ export function loadDogProfiles(): DogProfilesStorageSchema {
  * @param recommendations Map of saved recommendations by product ID
  */
 export function saveRecommendations(recommendations: Record<string, FoodRecommendation>): void {
-  const savedDates: Record<string, number> = {};
+  const { result, error } = tryCatchStorage(() => {
+    const savedDates: Record<string, number> = {};
+    
+    // Update timestamps for any new recommendations
+    Object.keys(recommendations).forEach(id => {
+      // Use existing timestamp if available, otherwise use current time
+      savedDates[id] = Date.now();
+    });
+    
+    const data: SavedRecommendationsStorageSchema['data'] = {
+      recommendations,
+      savedDates
+    };
+    
+    saveToStorage<SavedRecommendationsStorageSchema['data']>(StorageKey.SAVED_RECOMMENDATIONS, data);
+  }, 'saveRecommendations');
   
-  // Update timestamps for any new recommendations
-  Object.keys(recommendations).forEach(id => {
-    // Use existing timestamp if available, otherwise use current time
-    savedDates[id] = Date.now();
-  });
-  
-  const data: SavedRecommendationsStorageSchema['data'] = {
-    recommendations,
-    savedDates
-  };
-  
-  saveToStorage<SavedRecommendationsStorageSchema['data']>(StorageKey.SAVED_RECOMMENDATIONS, data);
+  if (error) {
+    throw error;
+  }
 }
 
 /**
@@ -340,22 +435,30 @@ export function loadRecommendations(): SavedRecommendationsStorageSchema {
  * @returns JSON string of all user data
  */
 export function exportData(): string {
-  const dogProfiles = loadDogProfiles();
-  const savedRecommendations = loadRecommendations();
-  const userPreferences = loadFromStorage<UserPreferencesStorageSchema['data']>(
-    StorageKey.USER_PREFERENCES,
-    DEFAULT_USER_PREFERENCES_STORAGE
-  );
+  const { result, error } = tryCatchStorage(() => {
+    const dogProfiles = loadDogProfiles();
+    const savedRecommendations = loadRecommendations();
+    const userPreferences = loadFromStorage<UserPreferencesStorageSchema['data']>(
+      StorageKey.USER_PREFERENCES,
+      DEFAULT_USER_PREFERENCES_STORAGE
+    );
+    
+    const exportData = {
+      schemaVersion: SCHEMA_VERSION,
+      exportDate: new Date().toISOString(),
+      dogProfiles,
+      savedRecommendations,
+      userPreferences
+    };
+    
+    return JSON.stringify(exportData, null, 2);
+  }, 'exportData', StorageErrorType.EXPORT_ERROR);
   
-  const exportData = {
-    schemaVersion: SCHEMA_VERSION,
-    exportDate: new Date().toISOString(),
-    dogProfiles,
-    savedRecommendations,
-    userPreferences
-  };
+  if (error) {
+    throw error;
+  }
   
-  return JSON.stringify(exportData, null, 2);
+  return result || '{}';
 }
 
 /**
@@ -364,34 +467,364 @@ export function exportData(): string {
  * @returns true if import successful, false otherwise
  */
 export function importData(jsonData: string): boolean {
-  try {
+  return importDataWithStrategy(jsonData, 'replace');
+}
+
+/**
+ * Cleanup old or unused data from storage based on age threshold
+ * @param olderThanDays Number of days after which data is considered old (default: 90)
+ * @returns Object with counts of items cleaned up by category
+ */
+export function cleanupStorage(olderThanDays: number = 90): { 
+  recommendations: number; 
+  oldBackups: number;
+  total: number;
+} {
+  const { result, error } = tryCatchStorage(() => {
+    if (!isStorageAvailable()) {
+      return { recommendations: 0, oldBackups: 0, total: 0 };
+    }
+    
+    const now = Date.now();
+    const ageThreshold = now - (olderThanDays * 24 * 60 * 60 * 1000); // Convert days to milliseconds
+    let removedRecommendations = 0;
+    
+    // Clean up old saved recommendations
+    const savedRecommendations = loadRecommendations();
+    if (savedRecommendations?.data?.recommendations && savedRecommendations?.data?.savedDates) {
+      const { recommendations, savedDates } = savedRecommendations.data;
+      const updatedRecommendations: Record<string, FoodRecommendation> = {};
+      const updatedSavedDates: Record<string, number> = {};
+      
+      Object.entries(recommendations).forEach(([id, recommendation]) => {
+        const savedDate = savedDates[id] || 0;
+        
+        // Keep recommendations newer than the threshold
+        if (savedDate > ageThreshold) {
+          updatedRecommendations[id] = recommendation;
+          updatedSavedDates[id] = savedDate;
+        } else {
+          removedRecommendations++;
+        }
+      });
+      
+      // Only save if we removed any recommendations
+      if (removedRecommendations > 0) {
+        saveToStorage(StorageKey.SAVED_RECOMMENDATIONS, {
+          recommendations: updatedRecommendations,
+          savedDates: updatedSavedDates
+        });
+      }
+    }
+    
+    // Clean up old backups
+    const oldBackups = cleanupOldBackups(3); // Keep 3 most recent backups
+    
+    const totalRemoved = removedRecommendations + oldBackups;
+    
+    return { 
+      recommendations: removedRecommendations, 
+      oldBackups, 
+      total: totalRemoved 
+    };
+  }, 'cleanupStorage', StorageErrorType.CLEANUP_ERROR);
+  
+  return result || { recommendations: 0, oldBackups: 0, total: 0 };
+}
+
+/**
+ * Download exported data as a JSON file
+ * @param filename Custom filename (default: 'petfood-data-export.json')
+ * @returns true if download initiated successfully, false otherwise
+ */
+export function downloadExportedData(filename: string = 'petfood-data-export.json'): boolean {
+  const { result, error } = tryCatchStorage(() => {
+    const exportString = exportData();
+    
+    // Create a Blob with the data
+    const blob = new Blob([exportString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary link and trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    }, 100);
+    
+    return true;
+  }, 'downloadExportedData', StorageErrorType.EXPORT_ERROR);
+  
+  return result === true;
+}
+
+/**
+ * Import data from an uploaded file
+ * @param file The uploaded File object
+ * @param mergeStrategy How to handle existing data ('replace', 'merge', 'keep-newer')
+ * @returns Promise resolving to true if import successful, false otherwise
+ */
+export async function importDataFromFile(
+  file: File, 
+  mergeStrategy: 'replace' | 'merge' | 'keep-newer' = 'replace'
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    
+    reader.onload = (event) => {
+      try {
+        const jsonData = event.target?.result as string;
+        const success = importDataWithStrategy(jsonData, mergeStrategy);
+        resolve(success);
+      } catch (error) {
+        console.error('Error importing data from file:', error);
+        resolve(false);
+      }
+    };
+    
+    reader.onerror = () => {
+      console.error('Error reading file');
+      resolve(false);
+    };
+    
+    reader.readAsText(file);
+  });
+}
+
+/**
+ * Import data with the specified merge strategy
+ * @param jsonData JSON string with user data
+ * @param mergeStrategy How to handle existing data ('replace', 'merge', 'keep-newer')
+ * @returns true if import successful, false otherwise
+ */
+export function importDataWithStrategy(
+  jsonData: string, 
+  mergeStrategy: 'replace' | 'merge' | 'keep-newer' = 'replace'
+): boolean {
+  const { result, error } = tryCatchStorage(() => {
     const importedData = JSON.parse(jsonData);
     
     // Validate imported data
     if (!importedData.schemaVersion || !importedData.exportDate) {
-      throw new Error('Invalid export data format');
+      throw new StorageError(
+        'Invalid export data format',
+        StorageErrorType.IMPORT_ERROR
+      );
     }
     
-    // Version check and potential migration would go here
-    
-    // Import data with backup first
+    // Create backup before making any changes
     createBackup();
     
+    // Handle dog profiles based on merge strategy
     if (importedData.dogProfiles?.data?.profiles) {
-      saveToStorage(StorageKey.DOG_PROFILES, importedData.dogProfiles.data);
+      if (mergeStrategy === 'replace') {
+        // Simply replace existing data
+        saveToStorage(StorageKey.DOG_PROFILES, importedData.dogProfiles.data);
+      } else {
+        // Merge or keep-newer strategies
+        const existingProfiles = loadDogProfiles();
+        
+        if (existingProfiles?.data?.profiles) {
+          const mergedProfiles = { ...existingProfiles.data };
+          
+          // Process each imported profile
+          Object.entries(importedData.dogProfiles.data.profiles).forEach(([id, profile]) => {
+            const existingProfile = mergedProfiles.profiles[id];
+            
+            if (!existingProfile) {
+              // Profile doesn't exist in current data, add it
+              mergedProfiles.profiles[id] = profile as DogProfile;
+            } else if (mergeStrategy === 'keep-newer') {
+              // Compare update timestamps and keep newer
+              const importedTimestamp = importedData.dogProfiles.updatedAt || 0;
+              const existingTimestamp = existingProfiles.updatedAt || 0;
+              
+              if (importedTimestamp > existingTimestamp) {
+                mergedProfiles.profiles[id] = profile as DogProfile;
+              }
+            } else {
+              // For 'merge' strategy, always update
+              mergedProfiles.profiles[id] = profile as DogProfile;
+            }
+          });
+          
+          // Save merged profiles
+          saveToStorage(StorageKey.DOG_PROFILES, mergedProfiles);
+        } else {
+          // No existing profiles, just import
+          saveToStorage(StorageKey.DOG_PROFILES, importedData.dogProfiles.data);
+        }
+      }
     }
     
+    // Handle recommendations with similar merge strategy
     if (importedData.savedRecommendations?.data?.recommendations) {
-      saveToStorage(StorageKey.SAVED_RECOMMENDATIONS, importedData.savedRecommendations.data);
+      if (mergeStrategy === 'replace') {
+        saveToStorage(StorageKey.SAVED_RECOMMENDATIONS, importedData.savedRecommendations.data);
+      } else {
+        const existingRecommendations = loadRecommendations();
+        
+        if (existingRecommendations?.data?.recommendations) {
+          const mergedRecommendations = { 
+            recommendations: { ...existingRecommendations.data.recommendations },
+            savedDates: { ...existingRecommendations.data.savedDates }
+          };
+          
+          // Process each imported recommendation
+          Object.entries(importedData.savedRecommendations.data.recommendations).forEach(([id, recommendation]) => {
+            const existingRecommendation = mergedRecommendations.recommendations[id];
+            const importedSavedDate = importedData.savedRecommendations.data.savedDates?.[id] || 0;
+            const existingSavedDate = mergedRecommendations.savedDates[id] || 0;
+            
+            if (!existingRecommendation) {
+              // Recommendation doesn't exist, add it
+              mergedRecommendations.recommendations[id] = recommendation as FoodRecommendation;
+              mergedRecommendations.savedDates[id] = importedSavedDate;
+            } else if (mergeStrategy === 'keep-newer' && importedSavedDate > existingSavedDate) {
+              // 'keep-newer' strategy - update if imported is newer
+              mergedRecommendations.recommendations[id] = recommendation as FoodRecommendation;
+              mergedRecommendations.savedDates[id] = importedSavedDate;
+            } else if (mergeStrategy === 'merge') {
+              // 'merge' strategy - always update
+              mergedRecommendations.recommendations[id] = recommendation as FoodRecommendation;
+              mergedRecommendations.savedDates[id] = importedSavedDate;
+            }
+          });
+          
+          // Save merged recommendations
+          saveToStorage(StorageKey.SAVED_RECOMMENDATIONS, mergedRecommendations);
+        } else {
+          // No existing recommendations, just import
+          saveToStorage(StorageKey.SAVED_RECOMMENDATIONS, importedData.savedRecommendations.data);
+        }
+      }
     }
     
+    // Handle user preferences
     if (importedData.userPreferences?.data) {
-      saveToStorage(StorageKey.USER_PREFERENCES, importedData.userPreferences.data);
+      if (mergeStrategy === 'replace') {
+        saveToStorage(StorageKey.USER_PREFERENCES, importedData.userPreferences.data);
+      } else {
+        const existingPreferences = loadFromStorage<UserPreferencesStorageSchema['data']>(
+          StorageKey.USER_PREFERENCES,
+          DEFAULT_USER_PREFERENCES_STORAGE
+        );
+        
+        if (existingPreferences?.data) {
+          if (mergeStrategy === 'keep-newer') {
+            const importedTimestamp = importedData.userPreferences.updatedAt || 0;
+            const existingTimestamp = existingPreferences.updatedAt || 0;
+            
+            if (importedTimestamp > existingTimestamp) {
+              saveToStorage(StorageKey.USER_PREFERENCES, importedData.userPreferences.data);
+            }
+          } else {
+            // For 'merge' strategy, merge objects
+            const mergedPreferences = {
+              ...existingPreferences.data,
+              ...importedData.userPreferences.data
+            };
+            saveToStorage(StorageKey.USER_PREFERENCES, mergedPreferences);
+          }
+        } else {
+          // No existing preferences, just import
+          saveToStorage(StorageKey.USER_PREFERENCES, importedData.userPreferences.data);
+        }
+      }
     }
     
     return true;
-  } catch (error) {
-    console.error('Error importing data:', error);
-    return false;
-  }
+  }, 'importDataWithStrategy', StorageErrorType.IMPORT_ERROR);
+  
+  return result === true;
+}
+
+/**
+ * Get statistics about storage usage and item counts
+ * @returns Object with storage usage statistics
+ */
+export function getStorageStats(): {
+  usage: { used: number; available?: number; percentUsed?: number };
+  counts: { dogProfiles: number; savedRecommendations: number; backups: number };
+  lastUpdated: { dogProfiles?: number; savedRecommendations?: number; backups?: number };
+} {
+  const { result, error } = tryCatchStorage(() => {
+    // Get storage usage
+    const usage = getStorageUsage();
+    
+    // Count items
+    const dogProfiles = loadDogProfiles();
+    const savedRecommendations = loadRecommendations();
+    
+    // Count backups
+    let backupCount = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(StorageKey.BACKUP_PREFIX) && !key.includes(StorageKey.DOG_PROFILES) && 
+          !key.includes(StorageKey.SAVED_RECOMMENDATIONS) && !key.includes(StorageKey.USER_PREFERENCES)) {
+        backupCount++;
+      }
+    }
+    
+    // Get profile and recommendation counts
+    const profileCount = dogProfiles?.data?.profiles ? Object.keys(dogProfiles.data.profiles).length : 0;
+    const recommendationCount = savedRecommendations?.data?.recommendations 
+      ? Object.keys(savedRecommendations.data.recommendations).length 
+      : 0;
+    
+    return {
+      usage,
+      counts: {
+        dogProfiles: profileCount,
+        savedRecommendations: recommendationCount,
+        backups: backupCount
+      },
+      lastUpdated: {
+        dogProfiles: dogProfiles?.updatedAt,
+        savedRecommendations: savedRecommendations?.updatedAt,
+        backups: getLatestBackupTimestamp()
+      }
+    };
+  }, 'getStorageStats');
+  
+  return result || {
+    usage: { used: 0 },
+    counts: { dogProfiles: 0, savedRecommendations: 0, backups: 0 },
+    lastUpdated: {}
+  };
+}
+
+/**
+ * Get the timestamp of the most recent backup
+ * @returns Timestamp of the most recent backup, or undefined if none exists
+ */
+function getLatestBackupTimestamp(): number | undefined {
+  const { result } = tryCatchStorage(() => {
+    let latestTimestamp: number | undefined;
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(StorageKey.BACKUP_PREFIX) && !key.includes(StorageKey.DOG_PROFILES) && 
+          !key.includes(StorageKey.SAVED_RECOMMENDATIONS) && !key.includes(StorageKey.USER_PREFERENCES)) {
+        try {
+          const timestamp = parseInt(key.replace(StorageKey.BACKUP_PREFIX, ''), 10);
+          if (!isNaN(timestamp) && (!latestTimestamp || timestamp > latestTimestamp)) {
+            latestTimestamp = timestamp;
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+    
+    return latestTimestamp;
+  }, 'getLatestBackupTimestamp');
+  
+  return result || undefined;
 } 

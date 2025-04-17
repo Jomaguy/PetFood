@@ -6,11 +6,15 @@ import { useState } from 'react';
 import { DogProfile, dogProfileSchema, DEFAULT_DOG_PROFILE } from '../../types/dogProfile';
 import { Button } from '../ui/atoms/Button';
 import { BasicDetailsStep, BasicInfoStep, HealthActivityStep } from './steps';
+import { useDogProfiles } from '../../context/DogProfileContext';
+import { useRouter } from 'next/navigation';
 
 const TOTAL_STEPS = 3;
 
 export const DogProfileForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const { addProfile } = useDogProfiles();
+  const router = useRouter();
   
   const methods = useForm<DogProfile>({
     resolver: zodResolver(dogProfileSchema),
@@ -22,10 +26,21 @@ export const DogProfileForm = () => {
 
   const onSubmit = (data: DogProfile) => {
     console.log('Form submitted:', data);
-    // TODO: Handle form submission
+    try {
+      const newProfileId = addProfile(data);
+      console.log('Profile saved with ID:', newProfileId);
+      // Redirect to dashboard after successful submission
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Error saving dog profile:', error);
+      // TODO: Show error message to user
+    }
   };
 
-  const nextStep = async () => {
+  const nextStep = async (e: React.MouseEvent) => {
+    // Prevent default form submission
+    e.preventDefault();
+    
     // Validate the current step fields before proceeding
     const fieldsToValidate = getFieldsToValidate(currentStep);
     const isStepValid = await trigger(fieldsToValidate);
@@ -35,7 +50,10 @@ export const DogProfileForm = () => {
     }
   };
 
-  const previousStep = () => {
+  const previousStep = (e: React.MouseEvent) => {
+    // Prevent default form submission
+    e.preventDefault();
+    
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
     }
@@ -108,6 +126,7 @@ export const DogProfileForm = () => {
             <Button
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={(e) => e.stopPropagation()} // Prevent event bubbling
             >
               Submit Profile
             </Button>

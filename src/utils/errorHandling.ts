@@ -14,6 +14,7 @@ export enum StorageErrorType {
   RESTORE_ERROR = 'restore_error',
   EXPORT_ERROR = 'export_error',
   IMPORT_ERROR = 'import_error',
+  CLEANUP_ERROR = 'cleanup_error',
   UNKNOWN_ERROR = 'unknown_error'
 }
 
@@ -70,6 +71,9 @@ export class StorageError extends Error {
       
       case StorageErrorType.IMPORT_ERROR:
         return 'Failed to import data. The file might be corrupted or in an invalid format.';
+      
+      case StorageErrorType.CLEANUP_ERROR:
+        return 'Failed to clean up old data. Please try again later or perform a manual cleanup.';
       
       default:
         return this.message || 'An unknown error occurred while accessing storage.';
@@ -160,17 +164,56 @@ export function logStorageError(error: StorageError, operation: string): void {
   // logToService(error, operation);
 }
 
+// Find the global StorageErrorContext if available
+let globalSetStorageError: ((error: StorageError) => void) | null = null;
+
+/**
+ * Register a function to set global storage errors
+ * This should be called by the StorageErrorProvider during initialization
+ */
+export function registerStorageErrorHandler(handler: (error: StorageError) => void): void {
+  globalSetStorageError = handler;
+}
+
+/**
+ * Unregister the global error handler
+ */
+export function unregisterStorageErrorHandler(): void {
+  globalSetStorageError = null;
+}
+
 // Try-catch wrapper for storage operations
 export function tryCatchStorage<T>(
   operation: () => T,
   operationName: string,
-  errorType?: StorageErrorType
+  errorType?: StorageErrorType,
+  options?: {
+    /** Whether to suppress UI notifications for this error */
+    suppressNotification?: boolean;
+    /** Whether to only log critical errors */
+    logOnlyCritical?: boolean;
+  }
 ): { result: T | null; error: StorageError | null } {
   try {
     const result = operation();
     return { result, error: null };
   } catch (err) {
     const error = handleStorageError(err, operationName, errorType);
+    
+    // Check if this is a critical error that should be shown to the user
+    const isCritical = error.type === StorageErrorType.STORAGE_UNAVAILABLE || 
+                     error.type === StorageErrorType.STORAGE_QUOTA_EXCEEDED;
+    
+    // Only log critical errors if requested
+    if (!options?.logOnlyCritical || isCritical) {
+      logStorageError(error, operationName);
+    }
+    
+    // Notify global error handler if available and notification is not suppressed
+    if (globalSetStorageError && !options?.suppressNotification) {
+      globalSetStorageError(error);
+    }
+    
     return { result: null, error };
   }
 } 

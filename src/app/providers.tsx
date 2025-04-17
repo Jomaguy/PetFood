@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/styles';
 import { GlobalStyles } from '@/styles/GlobalStyles';
 import { AppContextProvider } from '@/context';
+import { StorageManager } from '@/components/StorageManager';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -15,7 +16,9 @@ export function Providers({ children }: ProvidersProps) {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <AppContextProvider>
-        {children}
+        <StorageManager>
+          {children}
+        </StorageManager>
       </AppContextProvider>
     </ThemeProvider>
   );
